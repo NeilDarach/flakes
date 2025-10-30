@@ -19,22 +19,20 @@
           description = "Which extensions to include";
         };
       };
-      config = {
-        overlays.default = [
-          rust-overlay.overlays.default
-          (final: prev: {
-            rustToolChain = let rust = prev.rust-bin;
-            in if builtins.pathExists ./rust-toolchain.toml then
-              rust.fromRustupToolchainFile ./rust-toolchain.toml
-            else if builtins.pathExists ./rust-toolchain then
-              rust.fromRustupToolchainFile ./rust-toolchain
-            else
-              rust.stable.latest.default.override {
-                extensions = config.rustOptions.extensions;
-              };
-          })
-        ];
-      };
+      overlays.default = [
+        rust-overlay.overlays.default
+        (final: prev: {
+          rustToolChain = let rust = prev.rust-bin;
+          in if builtins.pathExists ./rust-toolchain.toml then
+            rust.fromRustupToolchainFile ./rust-toolchain.toml
+          else if builtins.pathExists ./rust-toolchain then
+            rust.fromRustupToolchainFile ./rust-toolchain
+          else
+            rust.stable.latest.default.override {
+              extensions = config.rustOptions.extensions;
+            };
+        })
+      ];
     };
   };
 }
