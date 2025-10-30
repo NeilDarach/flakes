@@ -20,22 +20,20 @@
         };
       };
       config = {
-        overlays = if true then
-          [
-            (final: prev: {
-              rustToolChain = let rust = prev.rust-bin;
-              in if builtins.pathExists ./rust-toolchain.toml then
-                rust.fromRustupToolchainFile ./rust-toolchain.toml
-              else if builtins.pathExists ./rust-toolchain then
-                rust.fromRustupToolchainFile ./rust-toolchain
-              else
-                rust.stable.latest.default.override {
-                  extensions = config.rustOptions.extensions;
-                };
-            })
-          ]
-        else
-          [ ];
+        overlays.default = [
+          rust-overlay.overlays.default
+          (final: prev: {
+            rustToolChain = let rust = prev.rust-bin;
+            in if builtins.pathExists ./rust-toolchain.toml then
+              rust.fromRustupToolchainFile ./rust-toolchain.toml
+            else if builtins.pathExists ./rust-toolchain then
+              rust.fromRustupToolchainFile ./rust-toolchain
+            else
+              rust.stable.latest.default.override {
+                extensions = config.rustOptions.extensions;
+              };
+          })
+        ];
       };
     };
   };
