@@ -20,7 +20,7 @@
         };
       };
       config = {
-        overlays.default = if true then
+        overlays = if true then
           final: prev: {
             rustToolChain = let rust = prev.rust-bin;
             in if builtins.pathExists ./rust-toolchain.toml then
