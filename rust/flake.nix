@@ -30,7 +30,7 @@
     ];
     makeDevShell = (pkgs: extra:
       pkgs.mkShell {
-        packages = with pkgs; [ rustToolChain just ] ++ (extra.packages or [ ]);
+        packages = with pkgs; [ rustToolChain just bacon ] ++ (extra.packages or [ ]);
         env = {
           RUST_SRC_PATH = "${pkgs.rustToolChain}/lib/rustlib/src/rust/library";
         };
