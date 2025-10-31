@@ -4,10 +4,7 @@
     flake-utils = { url = "github:numtide/flake-utils"; };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
   };
@@ -28,12 +25,21 @@
 
       })
     ];
-    makeDevShell = (pkgs: extra:
-      pkgs.mkShell {
-        packages = with pkgs; [ rustToolChain just bacon ] ++ (extra.packages or [ ]);
-        env = {
-          RUST_SRC_PATH = "${pkgs.rustToolChain}/lib/rustlib/src/rust/library";
-        };
-      });
+    makeDevShell = (pkgs: definition:
+      pkgs.mkShell (pkgs.lib.updateManyAttrsByPath [
+
+        {
+          path = [ "parameters" ];
+          update = old: (definition.packages or []) ++ [ pkgs.rustToolChain pkgs.just pkgs.bacon ];
+        }
+        {
+          path = [ "env" ];
+          update = old:
+            {
+              RUST_SRC_PATH =
+                "${pkgs.rustToolChain}/lib/rustlib/src/rust/library";
+            } // (definition.env or {});
+        }
+      ] definition));
   };
 }
