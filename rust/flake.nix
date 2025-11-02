@@ -10,7 +10,7 @@
   };
 
   outputs = { nixpkgs, rust-overlay, ... }: {
-    overlays.withExtensions  = {ext?["rustfmt" "rust-src"]}: [
+    overlays.withExtensions  = {ext?["rustfmt" "rust-src"], targ?[]}: [
       (import rust-overlay)
       (prev: final: {
         rustToolChain = let rust = prev.rust-bin;
@@ -21,6 +21,7 @@
         else
           rust.stable.latest.default.override {
             extensions = ext;
+                        targets = targ;
           };
 
       })
