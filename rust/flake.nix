@@ -10,7 +10,7 @@
   };
 
   outputs = { nixpkgs, rust-overlay, ... }: {
-    overlays.default = [
+    overlays.withExtensions  = {ext?["rustfmt" "rust-src"]}: [
       (import rust-overlay)
       (prev: final: {
         rustToolChain = let rust = prev.rust-bin;
@@ -20,17 +20,16 @@
           rust.fromRustupToolchainFile ./rust-toolchain
         else
           rust.stable.latest.default.override {
-            extensions = [ "rust-src" "rustfmt" ];
+            extensions = ext;
           };
 
       })
     ];
     makeDevShell = (pkgs: definition:
       pkgs.mkShell (pkgs.lib.updateManyAttrsByPath [
-
         {
-          path = [ "parameters" ];
-          update = old: (definition.packages or []) ++ [ pkgs.rustToolChain pkgs.just pkgs.bacon ];
+          path = [ "packages" ];
+          update = old: definition.packages ++ [ pkgs.rustToolChain pkgs.just pkgs.bacon ];
         }
         {
           path = [ "env" ];
