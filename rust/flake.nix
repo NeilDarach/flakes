@@ -27,7 +27,7 @@
       })
     ];
     makeDevShell = (pkgs: definition:
-      pkgs.mkShell (pkgs.lib.updateManyAttrsByPath [
+      pkgs.mkShellNoCC (pkgs.lib.updateManyAttrsByPath [
         {
           path = [ "packages" ];
           update = old: definition.packages ++ [ pkgs.rustToolChain pkgs.just pkgs.bacon ];
