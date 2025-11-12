@@ -16,7 +16,7 @@
           in {
             rustToolChain = ((prev.rustRustToolChain or defaultRust).override {
               extensions = (prev.rustToolChain.extensions or [ ])
-                ++ [ "rustfmt" "rust-src" ];
+                ++ [ "rustfmt" "rust-src" "rust-analyzer" ];
               targets = (prev.rustToolChain.targets or [ ]) ++ [
                 "wasm32-unknown-unknown"
                 "aarch64-apple-ios"
