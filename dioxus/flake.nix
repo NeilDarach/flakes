@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs = { nixpkgs.follows = "nixpkgs"; };
@@ -9,12 +9,10 @@
   outputs = { rust-overlay, nixpkgs, ... }:
     let inherit (nixpkgs) lib;
     in {
-      overlays = [
+      overlays.default = lib.composeManyExtensions [
         (import rust-overlay)
         (final: prev:
-          let
-            inherit (nixpkgs) lib;
-            defaultRust = prev.rust-bin.stable.latest.default;
+          let defaultRust = prev.rust-bin.stable.latest.default;
           in {
             rustToolChain = ((prev.rustRustToolChain or defaultRust).override {
               extensions = (prev.rustToolChain.extensions or [ ])
