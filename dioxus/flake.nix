@@ -12,11 +12,18 @@
       overlays.default = lib.composeManyExtensions [
         (import rust-overlay)
         (final: prev:
-          let defaultRust = prev.rust-bin.stable.latest.default;
+          let
+            defaultRust = prev.rust-bin.stable.latest.default;
+            signApp = prev.writeShellApplication {
+              name = "signApp";
+              runtimeInputs = with final; [ gnugrep findutils coreutils bash ];
+              text = builtins.readFile ./signApp;
+            };
           in {
+            inherit signApp;
             rustToolChain = ((prev.rustRustToolChain or defaultRust).override {
               extensions = (prev.rustToolChain.extensions or [ ])
-                ++ [ "rustfmt" "rust-src" "rust-analyzer" ];
+                ++ [ "rustfmt" "rust-src" "rust-analyzer" "clippy" ];
               targets = (prev.rustToolChain.targets or [ ]) ++ [
                 "wasm32-unknown-unknown"
                 "aarch64-apple-ios"
@@ -78,6 +85,7 @@
                 dioxus-cli
                 rustToolChain
                 cclink-impure
+                signApp
               ]));
           }
           {
